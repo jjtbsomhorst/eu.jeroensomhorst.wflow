@@ -1,0 +1,106 @@
+<style type="text/css">
+    .input-wrap {
+        position: relative;
+    }
+    .fa {
+        position: absolute;
+        margin-left: 5px;
+        margin-top: 7px;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s;
+    }
+    .fa.visible {
+        opacity: 1;
+        visibility: visible;
+    }
+</style>
+<p class="form-group">
+    <label for="name">Give your Weatherflow station a name
+    </label>
+    <span class="input-wrap">
+    <input type="text" id="name" placeholder="Naam" value="" />
+  </span>
+    <br/>
+    <label for="apikey">Enter the Weatherflow API Key:
+    </label>
+    <span class="input-wrap">
+    <input type="text" id="apiKey" placeholder="abcdefghikjlmnopqrstuvwxyz" value="" />
+  </span>
+    <br/>
+    <br/>
+    <label for="stationid">Enter the ID of the station (eg 620)
+    </label>
+    <span class="input-wrap">
+    <input type="number" id="stationid" placeholder="0000" value="" />
+    </span>
+    <br/>
+    <button class="button" id="validate">Save
+    </button>
+    <i class="solar-status solar-loading fa fa-circle-o-notch fa-spin">
+    </i>
+    <i class="solar-status solar-ok fa fa-check" style="color: #96ff00;">
+    </i>
+    <i class="solar-status solar-err fa fa-times" style="color: #ff6300;">
+    </i>
+</p>
+<p class="solar-err-msg" style="color: #ff6300;">
+</p>
+
+<script type="text/javascript">
+    $(function() {
+        $('#validate').click(function() {
+            function guid() {
+                function s4() {
+                    return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+                }
+
+                return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+            }
+            // variables
+            let APIKey = document.getElementById('apiKey').value;
+            let name = document.getElementById('name').value;
+            let stationid = parseInt(document.getElementById('stationid').value);
+
+            // APIkey is required
+            if (APIKey === "") {
+                // Give error, required values
+                Homey.alert(__('pair.start.required'), 'error');
+                return;
+            }
+            $('.solar-status').removeClass('visible');
+            $('.solar-loading').addClass('visible');
+            Homey.emit('validate', {
+                apikey: APIKey,
+                stationid: stationid,
+            }, function(err, result) {
+                $('.solar-status').removeClass('visible');
+                if (!err) {
+                    $('.solar-ok').addClass('visible');
+                    $('.solar-err-msg').html('');
+
+                    Homey.createDevice({
+                        name: name,
+                        data: {
+                            id: guid(),
+                        },
+                        settings: {
+                            apikey: APIKey,
+                            stationid: stationid
+                        },
+
+                        // the store is dynamic and persistent storage for your device
+                        store: {},
+
+                    }, function(err, result) {
+                        if( err ) return Homey.alert( err );
+                        Homey.done();
+                    });
+                } else {
+                    $('.solar-err').addClass('visible');
+                    $('.solar-err-msg').html(err.message || err.toString());
+                }
+            })
+        });
+    })
+</script>

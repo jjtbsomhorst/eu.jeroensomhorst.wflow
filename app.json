@@ -1,0 +1,172 @@
+{
+  "id": "eu.jeroensomhorst.weatherflow",
+  "version": "0.0.1",
+  "compatibility": ">=1.5.0",
+  "sdk": 2,
+  "name": {
+    "en": "Weatherflow"
+  },
+  "description": {
+    "en": "Adds support for Weatherflow stations"
+  },
+  "category": [
+    "climate"
+  ],
+  "permissions": [],
+  "images": {
+    "large": "/assets/images/large.png",
+    "small": "/assets/images/small.png"
+  },
+  "author": {
+    "name": "Jeroen Somhorst",
+    "email": "j.somhorst@gmail.com"
+  },
+  "capabilities": {
+    "measure_uvindex_capability": {
+      "type": "number",
+      "title": {
+        "en": "UV-index",
+        "nl": "Zonkracht"
+      },
+      "getable": true,
+      "setable": false,
+      "icon": "/assets/cap_measure_uvindex.svg"
+    },
+    "measure_apparent_temperature_capability": {
+      "type": "number",
+      "title": {
+        "nl": "Gevoelstemperatuur",
+        "en": "Wind chill"
+      },"units": {
+        "en": "°C",
+        "nl": "°C",
+        "de": "°C"
+      },
+      "getable": true,
+      "setable": false,
+      "icon": "/assets/cap_apparent_temperature.svg"
+    }
+  },
+  "drivers": [
+    {
+      "id": "weatherflow_station",
+      "name": {
+        "en": "Weatherflow station",
+        "nl": "Weatherflow station"
+      },
+      "class": "other",
+      "capabilities": [
+        "measure_temperature",
+        "measure_humidity",
+        "measure_pressure",
+        "measure_wind_strength",
+        "measure_wind_angle",
+        "measure_gust_strength",
+        "measure_uvindex_capability",
+        "measure_apparent_temperature_capability"
+      ],
+      "pair": [
+        {
+          "id": "weatherflow_pair"
+        }
+      ],"settings": [
+      {
+        "type": "group",
+        "label": {
+          "en": "Weatherflow settings",
+          "nl": "Weatherflow instellingen"
+        },
+        "children": [
+          {
+            "id": "apikey",
+            "type": "text",
+            "value": "abcdefghijklmnopqrstuvwxyz",
+            "label": {
+              "en": "Weatherflow api key",
+              "nl": "Weatherflow api sleutel"
+            },
+            "hint": {
+              "en": "An API key is required. You can obtain one at https://weatherflow.github.io/SmartWeather/api/#getting-started",
+              "nl": "Een API sleutel is verplicht. U kunt er een opvragen via https://weatherflow.github.io/SmartWeather/api/#getting-started."
+            }
+          },
+          {
+            "id": "stationid",
+            "type": "number",
+            "value": 0,
+            "label": {
+              "en": "Station ID",
+              "nl": "Station ID",
+              "de": "Station ID"
+            }
+          }
+        ]
+      }]
+    }
+  ],
+  "flow": {
+    "triggers": [
+      {
+        "id": "measure_apparent_temperature_capability_changed",
+        "title": {
+          "en": "apparent temperature has changed",
+          "nl": "Gevoelstemperatuur is veranderd"
+        },
+        "hint": {
+          "en": "Triggers when the apparent temperature changes.",
+          "nl": "Triggert zodra de gevoelstemperatuur veranderd."
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "placeholder": {
+              "en": "selecteer",
+              "nl": "selecteer"
+            },
+            "filter": "driver_id=weatherflow_station"
+          }
+        ],
+        "tokens": [
+          {
+            "name": "value",
+            "type": "number",
+            "title": {
+              "en": "Temperature",
+              "nl": "Temperatuur"
+            }
+          }]
+      },{
+        "id": "measure_uvindex_capability_changed",
+        "title": {
+          "en": "UV index has changed",
+          "nl": "Zonkracht is veranderd"
+        },
+        "hint": {
+          "en": "Triggers when UV Index changes.",
+          "nl": "Triggert zodra de zonkracht veranderd."
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "placeholder": {
+              "en": "selecteer",
+              "nl": "selecteer"
+            },
+            "filter": "driver_id=weatherflow_station"
+          }
+        ],
+        "tokens": [
+          {
+            "name": "value",
+            "type": "number",
+            "title": {
+              "en": "uv index",
+              "nl": "Zonkracht"
+            }
+          }]
+      }
+    ]
+  }
+}
