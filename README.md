@@ -7,4 +7,5 @@ from a single station per device. Currently the station needs to be publicly ava
 
 # Changelog 
 
+* 0.0.2 Added logic to check if certain capability values are available. This to prevent errors
 * 0.0.1 First implementation adding basic support for **public** available stations 

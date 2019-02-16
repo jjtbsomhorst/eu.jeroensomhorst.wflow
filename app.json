@@ -1,10 +1,11 @@
 {
   "id": "eu.jeroensomhorst.weatherflow",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "compatibility": ">=1.5.0",
   "sdk": 2,
   "name": {
-    "en": "Weatherflow"
+    "en": "Weatherflow",
+    "nl": "Weatherflow"
   },
   "description": {
     "en": "Adds support for Weatherflow stations"
@@ -65,11 +66,16 @@
         "measure_uvindex_capability",
         "measure_apparent_temperature_capability"
       ],
+      "images": {
+        "large": "drivers/weatherflow_station/assets/images/large.png",
+        "small": "drivers/weatherflow_station/assets/images/small.png"
+      },
       "pair": [
         {
           "id": "weatherflow_pair"
         }
-      ],"settings": [
+      ],
+      "settings": [
       {
         "type": "group",
         "label": {

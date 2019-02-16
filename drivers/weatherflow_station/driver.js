@@ -11,6 +11,15 @@ class WeatherflowStation extends Homey.Driver {
 
     onInit() {
         Homey.app.log('Initialize Weatherflow station driver');
+        this.capabilitymap = new Map();
+        this.capabilitymap.set('measure_temperature','air_temperature');
+        this.capabilitymap.set('measure_humidity','relative_humidity');
+        this.capabilitymap.set('measure_pressure','barometric_pressure');
+        this.capabilitymap.set('measure_wind_strength','wind_avg');
+        this.capabilitymap.set('measure_wind_angle','wind_direction');
+        this.capabilitymap.set('measure_gust_strength','wind_gust');
+        this.capabilitymap.set('measure_uvindex_capability','uv');
+        this.capabilitymap.set('measure_apparent_temperature_capability','feels_like');
 
         Homey.ManagerCron.getTask(CRONTASK_RETRIEVESTATIONINFO)
             .then(task => {
@@ -51,22 +60,17 @@ class WeatherflowStation extends Homey.Driver {
                         if(info.status.status_message === 'SUCCESS' && info.hasOwnProperty('obs')){
 
                             let obs = info.obs[0]; // only get the first device..?
-                            device.setCapabilityValue("measure_temperature", obs.air_temperature);
-                            device.setCapabilityValue("measure_humidity", obs.relative_humidity);
-                            device.setCapabilityValue("measure_pressure", obs.barometric_pressure);
-                            device.setCapabilityValue("measure_wind_strength", obs.wind_avg);
-                            device.setCapabilityValue("measure_wind_angle", obs.wind_direction);
-                            device.setCapabilityValue("measure_gust_strength", obs.wind_gust);
-                            device.setCapabilityValue("measure_uvindex_capability", obs.uv);
-                            device.setCapabilityValue("measure_apparent_temperature_capability", obs.feels_like);
+
+                            for (let [key, value] of this.capabilitymap) {
+                                if(obs.hasOwnProperty(value)){
+                                    device.setCapabilityValue(key,obs[value]);
+                                }
+
+                            }
                         }else{
                             Homey.app.error('Could not get readings from station');
                             Homey.app.error('Station: '+settings.stationid);
                         }
-
-
-
-
                     }
                 }catch(e){
                     Homey.app.error('Unable to retrieve data from api for device');
